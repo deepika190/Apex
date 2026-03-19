@@ -1,0 +1,41 @@
+Senario:  Write an optimized query to find top 3 performing Accounts per Region 
+based on total Opportunity revenue, using only one aggregation query ?
+
+public class Top3RevenueBasedOnRegions {
+
+    public void regionMap() {
+
+        // Map to store top 3 accounts per region
+        Map<String, List<AggregateResult>> regionMap = new Map<String, List<AggregateResult>>();
+
+        // Aggregate total revenue per account per region
+        List<AggregateResult> results = [
+            SELECT AccountId accId, Account.Name accName, Account.Region__c region, SUM(Amount) total
+            FROM Opportunity
+            GROUP BY AccountId, Account.Name, Account.Region__c
+            ORDER BY Account.Region__c, SUM(Amount) DESC
+        ];
+
+        // Loop through results and keep top 3 per region
+        for (AggregateResult ar : results) {
+            String region = (String) ar.get('region');
+
+            if (!regionMap.containsKey(region)) {
+                regionMap.put(region, new List<AggregateResult>());
+            }
+
+            if (regionMap.get(region).size() < 3) {
+                regionMap.get(region).add(ar);
+            }
+        }
+
+        // Debug output
+        for (String reg : regionMap.keySet()) {
+            System.debug('Region: ' + reg);
+            for (AggregateResult ar : regionMap.get(reg)) {
+                System.debug(ar);
+            }
+        }
+    } // <-- closes regionMap method
+
+} // <-- closes class
