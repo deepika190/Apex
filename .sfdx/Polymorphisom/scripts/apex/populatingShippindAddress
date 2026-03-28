@@ -1,0 +1,42 @@
+
+//code in Apexc:Class
+public class ApexTriggerHandler {
+    
+    public static void populatingShippindAddress(list<Account> accList)
+    {
+        for(Account acc:accList)
+        {
+            
+            if(acc.BillingCity!= Null)
+            {
+                acc.ShippingCity=acc.BillingCity;
+            }
+            if(acc.BillingPostalCode!= Null)
+            {
+                acc.ShippingPostalCode=acc.BillingPostalCode;
+            }
+            if(acc.BillingState!= Null)
+            {
+                acc.ShippingState=acc.BillingState;
+            }
+            if(acc.BillingCountry!= Null)
+            {
+                acc.ShippingCountry=acc.BillingCountry;
+            }
+           
+        }
+    }
+
+}
+
+
+
+//Code in Apext:Trigger
+
+trigger triggerHandler on Account (before insert) {
+    
+    if (Trigger.isBefore && Trigger.isInsert)
+    {
+    ApexTriggerHandler.populatingShippindAddress(Trigger.New);
+	}
+}
